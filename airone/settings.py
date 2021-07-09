@@ -115,7 +115,6 @@ REPLICATED_DATABASE_SLAVES = [
 ]
 REPLICATED_VIEWS_OVERRIDES = {
     '/auth/*': 'master',
-    '/user/*': 'master',
 }
 
 # Password validation
