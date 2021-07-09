@@ -7,3 +7,4 @@ exclude =
     ./.tox,
     ./*/migrations,
     .manage.py
+    ./airone/settings.py

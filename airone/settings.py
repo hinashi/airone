@@ -5,6 +5,7 @@ import errno
 import importlib
 
 from airone.lib.log import Logger
+from django_replicated.settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django_replicated.middleware.ReplicationMiddleware',
 ]
 
 ROOT_URLCONF = 'airone.urls'
@@ -107,7 +109,14 @@ DATABASES = {
         }
     }
 }
-DATABASE_ROUTERS = []
+DATABASE_ROUTERS = ['django_replicated.router.ReplicationRouter']
+REPLICATED_DATABASE_SLAVES = [
+    'default'
+]
+REPLICATED_VIEWS_OVERRIDES = {
+    '/auth/*': 'master',
+    '/user/*': 'master',
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
