@@ -4,20 +4,22 @@ var get_register_attrs = function(base) {
   var attrs = []
 
   {% for attr in attributes %}
-  attrs.push({
-    'id': '{{ attr.id }}',
-    'type': '{{ attr.type }}',
-    'value': $(base).find(".attr_value[attr_id='{{ attr.id }}'][enabled='True']").map(function(i, e) {
-      if($(e).attr('type') == 'checkbox') {
-        return {'data': $(e).prop('checked'), 'index': $(e).attr('index')};
-      } else {
-        return {'data': $(e).val(), 'index': $(e).attr('index')};
-      }
-    }).get(),
-    'referral_key': $(base).find(".referral_key[attr_id='{{ attr.id }}'][enabled='True']").map(function(i, e){
-      return {'data': $(e).val(), 'index': $(e).attr('index')};
-    }).get(),
-  });
+    {% if attr.id %}
+      attrs.push({
+        'id': '{{ attr.id }}',
+        'type': '{{ attr.type }}',
+        'value': $(base).find(".attr_value[attr_id='{{ attr.id }}'][enabled='True']").map(function(i, e) {
+          if($(e).attr('type') == 'checkbox') {
+            return {'data': $(e).prop('checked'), 'index': $(e).attr('index')};
+          } else {
+            return {'data': $(e).val(), 'index': $(e).attr('index')};
+          }
+        }).get(),
+        'referral_key': $(base).find(".referral_key[attr_id='{{ attr.id }}'][enabled='True']").map(function(i, e){
+          return {'data': $(e).val(), 'index': $(e).attr('index')};
+        }).get(),
+      });
+    {% endif %}
   {% endfor %}
 
   return attrs;
