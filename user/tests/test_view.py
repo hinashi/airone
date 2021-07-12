@@ -151,6 +151,15 @@ class ViewTest(TestCase):
         resp = self.client.get(reverse('user:edit', args=[0]))
         self.assertEqual(resp.status_code, 303)
 
+    def test_edit_get_with_other_userid(self):
+        self._guest_login()
+
+        user = User.objects.get(username='admin')
+        resp = self.client.get(reverse('user:edit', args=[user.id]))
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.content.decode('utf-8'),
+                         "You don't have permission to access")
+
     def test_edit_get_page(self):
         self._admin_login()
 
