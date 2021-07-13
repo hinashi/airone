@@ -580,7 +580,26 @@ class Attribute(ACLBase):
 
         return False
 
-    def add_value(self, user, value, boolean=False):
+    def _get_default_value(self):
+        if self.schema.type & AttrTypeValue['array']:
+            return []
+
+        if(self.schema.type & AttrTypeValue['named']):
+            return {'name': '', 'id': None}
+
+        if(self.schema.type & AttrTypeValue['string'] or
+                self.schema.type & AttrTypeValue['text']):
+            return ''
+
+        if(self.schema.type & AttrTypeValue['object'] or
+                self.schema.type & AttrTypeValue['group'] or
+                self.schema.type & AttrTypeValue['date']):
+            return None
+
+        if(self.schema.type & AttrTypeValue['boolean']):
+            return False
+
+    def add_value(self, user, value, boolean=False, default_value=False):
         """This method make AttributeValue and set it as the latest one"""
 
         # This is a helper method to set AttributeType
@@ -651,6 +670,9 @@ class Attribute(ACLBase):
                     return
 
             return attrv
+
+        if default_value:
+            value = self._get_default_value()
 
         # checks the type of specified value is acceptable for this Attribute object
         if not self._validate_value(value):

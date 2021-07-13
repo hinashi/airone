@@ -499,6 +499,36 @@ class ModelTest(AironeTestCase):
         for v in [[], [None], None]:
             self.assertFalse(attr.is_updated(v))
 
+    def test_add_value_with_default_value(self):
+        user = User.objects.create(username='hoge')
+
+        entity = self.create_entity_with_all_type_attributes(user)
+        entry = Entry.objects.create(name='entry', schema=entity, created_user=user)
+        entry.complement_attrs(user)
+
+        # set default values for entry
+        for entity_attr in entity.attrs.all():
+            attr = entry.attrs.get(schema=entity_attr)
+            attr.add_value(user, None, default_value=True)
+
+        default_value = [
+            {'type': 'string', 'value': ''},
+            {'type': 'text', 'value': ''},
+            {'type': 'object', 'value': None},
+            {'type': 'named_object', 'value': {'': None}},
+            {'type': 'boolean', 'value': False},
+            {'type': 'group', 'value': None},
+            {'type': 'date', 'value': None},
+            {'type': 'array_string', 'value': []},
+            {'type': 'array_object', 'value': []},
+            {'type': 'array_named_object', 'value': []},
+            {'type': 'array_group', 'value': []},
+        ]
+
+        for (i, attr) in enumerate(entry.attrs.all()):
+            self.assertEqual(attr.schema.type, AttrTypeValue[default_value[i]['type']])
+            self.assertEqual(attr.get_latest_value().get_value(), default_value[i]['value'])
+
     def test_get_attribute_value_during_updating(self):
         user = User.objects.create(username='hoge')
 

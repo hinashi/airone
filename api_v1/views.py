@@ -16,6 +16,7 @@ from entity.models import Entity
 from entry.models import Entry
 from job.models import Job
 from user.models import User
+from entry.tasks import _do_create_entry_attrs
 
 from entry.settings import CONFIG as ENTRY_CONFIG
 
@@ -86,8 +87,9 @@ class EntryAPI(APIView):
                                          **entry_condition)
             resp_data['is_created'] = True
 
-            # create job to notify entry event to the registered WebHook
-            job_notify = Job.new_notify_create_entry(user, entry)
+            _do_create_entry_attrs(user, entry, sel.validated_data, is_job=False)
+
+            return Response(dict({'result': entry.id}, **resp_data))
 
         entry.complement_attrs(user)
         for name, value in sel.validated_data['attrs'].items():
@@ -108,7 +110,7 @@ class EntryAPI(APIView):
         # run notification job
         job_notify.run()
 
-        entry.del_status(Entry.STATUS_CREATING | Entry.STATUS_EDITING)
+        entry.del_status(Entry.STATUS_EDITING)
 
         return Response(dict({'result': entry.id}, **resp_data))
 

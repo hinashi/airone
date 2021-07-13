@@ -4,6 +4,7 @@
 
 ### Changed
 * Update Django to version 3.2.4 LTS (#153)
+* Changed to create the default attribute value when creating the entry (#166)
 
 ### Fixed
 * Fixed the result being different depending on the hint_attr_value of
