@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Setup Hugo
@@ -15,6 +15,7 @@ jobs:
           hugo-version: '0.110.0'
       - name: Build
         run: hugo --minify
+        working-directory: ./docs
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
