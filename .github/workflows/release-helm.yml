@@ -1,0 +1,17 @@
+name: release helm
+on:
+  push:
+    branches:
+      - fixed/gh_pages
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish Helm charts
+        uses: tylerauerbeck/helm-gh-pages@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          charts_dir: .
+          charts_url: https://hinashi.github.io/airone/chart
