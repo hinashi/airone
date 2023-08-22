@@ -1,0 +1,33 @@
+apiVersion: v1
+entries:
+  airone:
+  - apiVersion: v2
+    created: "2023-08-22T06:15:42.266944726Z"
+    dependencies:
+    - alias: mysql
+      condition: mysql.enabled
+      name: mysql-innodbcluster
+      repository: https://mysql.github.io/mysql-operator/
+      version: 2.0.11
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: https://helm.elastic.co
+      version: 7.17.3
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.1.1
+    description: AirOne is an open source tool built for DCIM(Data Center Infrastructure
+      Management)
+    digest: dd6a9ccdd82cf49e85b840e29572f02d3f55924a9411df556aef95df76cb0a8c
+    icon: https://raw.githubusercontent.com/dmm-com/airone/master/static/favicon.ico
+    keywords:
+    - airone
+    name: airone
+    sources:
+    - https://github.com/dmm-com/airone
+    type: application
+    urls:
+    - https://github.com/hinashi/airone/releases/download/airone-1.20.0/airone-1.20.0.tgz
+    version: 1.20.0
+generated: "2023-08-22T06:15:42.266956026Z"
