@@ -24,7 +24,7 @@ license = "GPLv2"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 boto3 = "1.26.114"
 celery = "5.2.2"
 ddtrace = "1.2.1"

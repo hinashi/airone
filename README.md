@@ -13,7 +13,7 @@ These are the features of this software.
 Here is the documentation to setup the development environment of AirOne.
 
 ## Installation of AirOne
-You have to install Python3.8+ to run AirOne like below (for the case of `ubuntu`).
+You have to install Python3.10+ to run AirOne like below (for the case of `ubuntu`).
 ```
 user@hostname:~$ sudo apt-get update
 user@hostname:~$ sudo apt-get install python3 python3-pip python3-venv
@@ -268,7 +268,7 @@ Install nvm command.
 
 Install npm packages.
 ```
-user@hostname:~$ nvm install 17.2
+user@hostname:~$ nvm install 18.12.0
 user@hostname:~$ cd airone
 user@hostname:~/airone$ npm install
 ```
