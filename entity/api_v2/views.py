@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import filters, generics, serializers, status, viewsets
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.request import Request
@@ -135,8 +135,9 @@ class EntityAPI(viewsets.ModelViewSet):
 
         serializer = EntityCreateSerializer(data=request.data, context={"_user": user})
         serializer.is_valid(raise_exception=True)
+        entity = serializer.create(serializer.validated_data)
 
-        job = Job.new_create_entity_v2(user, None, params=request.data)
+        job = Job.new_create_entity_v2(user, entity, params=request.data)
         job.run()
 
         return Response(status=status.HTTP_202_ACCEPTED)
@@ -150,6 +151,7 @@ class EntityAPI(viewsets.ModelViewSet):
             instance=entity, data=request.data, context={"_user": user}
         )
         serializer.is_valid(raise_exception=True)
+        serializer.update(entity, serializer.validated_data)
 
         job = Job.new_edit_entity_v2(user, entity, params=request.data)
         job.run()
@@ -276,7 +278,7 @@ class EntityAttrNameAPI(generics.GenericAPIView):
             entities = Entity.objects.filter(id__in=entity_ids, is_active=True)
             if len(entity_ids) != len(entities):
                 # the case invalid entity-id was specified
-                raise ValidationError("Target Entity doesn't exist")
+                raise NotFound("Target Entity doesn't exist")
 
             # filter only names appear in all specified entities
             entity_attrs = entity_attrs.filter(parent_entity__in=entities)
@@ -292,7 +294,12 @@ class EntityAttrNameAPI(generics.GenericAPIView):
                 parent_entity__in=referral_entity_ids, is_active=True
             )
 
-        return entity_attrs.values_list("name", flat=True).order_by("name").distinct()
+        # multiple parent_entity case
+        if len(entity_attrs.values_list("parent_entity_id", flat=True).distinct()) > 1:
+            return entity_attrs.values_list("name", flat=True).order_by("name").distinct()
+        # single parent_entity case
+        else:
+            return entity_attrs.values_list("name", flat=True).order_by("index", "pk")
 
     def get(self, request: Request) -> Response:
         queryset = self.get_queryset()

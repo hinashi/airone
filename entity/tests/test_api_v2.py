@@ -64,6 +64,7 @@ class ViewTest(AironeViewTest):
                 "attrs": [],
                 "webhooks": [],
                 "is_public": True,
+                "has_ongoing_changes": False,
             },
         )
 
@@ -1303,7 +1304,7 @@ class ViewTest(AironeViewTest):
 
         mock_call_custom.side_effect = side_effect
         resp = self.client.post("/entity/api/v2/", json.dumps(params), "application/json")
-        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(mock_call_custom.called)
 
         def side_effect(handler_name, entity_name, user, *args):
@@ -2488,7 +2489,7 @@ class ViewTest(AironeViewTest):
         resp = self.client.put(
             "/entity/api/v2/%d/" % self.entity.id, json.dumps(params), "application/json"
         )
-        self.assertEqual(resp.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(mock_call_custom.called)
 
         def side_effect(handler_name, entity_name, user, *args):
@@ -3524,7 +3525,8 @@ class ViewTest(AironeViewTest):
             "/entity/api/v2/attrs?entity_ids=%s&referral_attr=%s" % (entity3.id, "puyo")
         )
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.json(), ["bar", "foo", "fuga"])
+        # order in the list is non-deterministic and it's not necessary
+        self.assertEqual(sorted(resp.json()), sorted(["foo", "bar", "fuga"]))
 
         # get all attribute infomations are returned collectly
         resp = self.client.get("/entity/api/v2/attrs")
@@ -3533,7 +3535,10 @@ class ViewTest(AironeViewTest):
 
         # invalid entity_id(s)
         resp = self.client.get("/entity/api/v2/attrs?entity_ids=9999")
-        self.assertEqual(resp.status_code, 400)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(
+            resp.json(), {"code": "AE-230000", "message": "Target Entity doesn't exist"}
+        )
 
     @mock.patch("entry.tasks.create_entry_v2.delay", mock.Mock(side_effect=create_entry_v2))
     @mock.patch(

@@ -18,6 +18,7 @@ import {
   EntryBase,
   EntryCopy,
   EntryRetrieve,
+  EntrySearchChain,
   GetEntryAttrReferral,
   Group,
   GroupApi,
@@ -50,6 +51,7 @@ import Cookies from "js-cookie";
 import fileDownload from "js-file-download";
 
 import {
+  AdvancedSerarchResultList,
   EntityList as ConstEntityList,
   EntityHistoryList,
   EntryHistoryList,
@@ -682,9 +684,9 @@ class AironeApiClient {
     referralName = "",
     searchAllEntities = false,
     page: number,
-    limit = 100
+    limit: number = AdvancedSerarchResultList.MAX_ROW_COUNT,
+    offset: number = 0
   ): Promise<AdvancedSearchResult> {
-    const offset = (page - 1) * limit;
     return await this.entry.entryApiV2AdvancedSearchCreate(
       {
         advancedSearch: {
@@ -697,8 +699,24 @@ class AironeApiClient {
           isAllEntities: searchAllEntities,
           referralName: referralName,
           entryLimit: limit,
-          entryOffset: offset,
+          entryOffset: offset === 0 ? (page - 1) * limit : offset,
         },
+      },
+      {
+        headers: {
+          "X-CSRFToken": getCsrfToken(),
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      }
+    );
+  }
+
+  async advancedSearchChain(
+    entrySearchChain: EntrySearchChain
+  ): Promise<EntryBase[]> {
+    return await this.entry.entryApiV2AdvancedSearchChainCreate(
+      {
+        entrySearchChain: entrySearchChain,
       },
       {
         headers: {
