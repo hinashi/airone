@@ -62,15 +62,24 @@ export const AdvancedSearchJoinModal: FC<Props> = ({
             keyword: "",
           };
         }),
+        // This nested parameters won't converted by the OpenAPI Generator because
+        // its serializer couldn't declare it recursively.
+        join_attrs: [{}],
       },
     ];
+
+    console.log("[onix/AdvancedSearchJoinModal(01)] newJoinAttrs: ", newJoinAttrs.toString());
+
     const params = formatAdvancedSearchParams({
       baseParams: new URLSearchParams(location.search),
       joinAttrs: newJoinAttrs,
     });
 
+    console.log("[onix/AdvancedSearchJoinModal(01)] params: ", params.toString());
+
     // update page by changing joined Attribute filter condition
     setSearchResults(true);
+
 
     // Update Page URL parameters
     history.push({
