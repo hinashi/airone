@@ -10,6 +10,7 @@ def index(request):
 
 
 def error404(request, exception):
+    print("pagoda debug")
     if not request.user.is_authenticated:
         if settings.AIRONE.get("LEGACY_UI_DISABLED"):
             return HttpResponseSeeOther("/auth/login/?next=/ui/")
