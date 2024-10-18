@@ -29,6 +29,10 @@ jobs:
       - name: poetry install
         run: |
           poetry install --no-ansi
+      - name: debug
+        run: |
+          sudo ls -l /lib/x86_64-linux-gnu/libldap*
+          pip list
       - name: staticchecks
         run: |
           mv custom_view_sample custom_view
