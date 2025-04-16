@@ -8,6 +8,14 @@
 
 ### Fixed
 
+## v3.129.0
+
+### Fixed
+* Disable group name links and menu for unauthorized users.
+  Contributed by @tsunoda-takahiro
+* Fixed an error with invalid attrinfo parameter in entry searchAPI.
+  Contributed by @hinashi
+
 ## v3.128.0
 
 ### Added
