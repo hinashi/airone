@@ -46,10 +46,11 @@ class AironeTestCase(TestCase):
         OVERRIDE_ES_CONFIG = settings.ES_CONFIG.copy()
         # Attach prefix "test-" to distinguish index name for test with configured one.
         # This should be only one time.
-        if settings.ES_CONFIG["INDEX_NAME"].find("test-") != 0:
-            OVERRIDE_ES_CONFIG["INDEX_NAME"] = "test-" + settings.ES_CONFIG["INDEX_NAME"]
+        if OVERRIDE_ES_CONFIG["INDEX_NAME"].find("test-") != 0:
+            OVERRIDE_ES_CONFIG["INDEX_NAME"] = "test-" + OVERRIDE_ES_CONFIG["INDEX_NAME"]
         # Append pid suffix to enable parallel test
-        OVERRIDE_ES_CONFIG["INDEX_NAME"] += "-" + str(os.getpid())
+        if OVERRIDE_ES_CONFIG["INDEX_NAME"].find("-" + str(os.getpid())) != 0:
+            OVERRIDE_ES_CONFIG["INDEX_NAME"] = OVERRIDE_ES_CONFIG["INDEX_NAME"] + "-" + str(os.getpid())
         OVERRIDE_AIRONE = settings.AIRONE.copy()
         OVERRIDE_AIRONE_FLAGS = settings.AIRONE_FLAGS.copy()
         # Append pid suffix to enable parallel test
