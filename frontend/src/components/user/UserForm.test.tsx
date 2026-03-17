@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment ./jest.environment.js
  */
 
 import { UserRetrieveAuthenticateTypeEnum } from "@dmm-com/airone-apiclient-typescript-fetch";

@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment ./jest.environment.js
  */
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";

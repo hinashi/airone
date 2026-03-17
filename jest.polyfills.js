@@ -23,6 +23,15 @@ if (globalThis.TransformStream === undefined) {
 
 // Add required web API globals for MSW
 const { Blob, File } = require('node:buffer');
+
+// Must be set BEFORE require('undici') because undici captures
+// performance.markResourceTiming at module load time (line 318 of fetch/index.js):
+//   const markResourceTiming = performance.markResourceTiming
+// If undefined at that point, all fetch calls will throw at cleanup time.
+if (typeof performance !== 'undefined' && typeof performance.markResourceTiming !== 'function') {
+  performance.markResourceTiming = () => {};
+}
+
 const { fetch, Headers, FormData, Request, Response } = require('undici');
 
 // Define these globals for MSW
@@ -67,9 +76,4 @@ class BroadcastChannel {
 // Add BroadcastChannel to global scope
 if (!globalThis.BroadcastChannel) {
     globalThis.BroadcastChannel = BroadcastChannel;
-}
-
-// Add polyfill for performance.markResourceTiming used by undici
-if (typeof performance !== 'undefined' && typeof performance.markResourceTiming !== 'function') {
-  performance.markResourceTiming = () => {};
 }

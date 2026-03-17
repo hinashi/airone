@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment ./jest.environment.js
  */
 
 import { EntityDetail } from "@dmm-com/airone-apiclient-typescript-fetch";

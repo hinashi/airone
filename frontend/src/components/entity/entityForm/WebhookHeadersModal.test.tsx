@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment ./jest.environment.js
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 import { useForm } from "react-hook-form";
